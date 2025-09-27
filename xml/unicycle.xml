@@ -1,0 +1,33 @@
+<mujoco>
+	<option gravity="0 0 -9.81">
+	<!-- <option gravity="0 0 -0.5"> -->
+		<!-- <flag sensornoise="enable"/> -->
+	</option>
+
+	<worldbody>
+		<light diffuse=".5 .5 .5" pos="0 0 3" dir="0 0 -1"/>
+    	<geom type="plane" size="5 5 0.1" rgba=".9 0 0 1"/>
+		<body pos="0 0 1.2" euler="0 0 0">
+			<joint type="free"/>
+			<geom type="box" size="0.1 0.1 0.05" rgba=".9 .9 0 1" mass="2"/>
+			<site name="imu_site" pos="0 0 0.1" quat="1 0 0 0"/> <!-- Position and orientation of the IMU -->
+			<body pos="0 0 -1.0" euler="0 90 0">
+				<joint name="pin" type="hinge" axis="0 0 -1" pos="0 0 0"/>
+				<geom type="cylinder" size=".1 .02" rgba="0 .9 0 1" mass="1"/>
+			</body>
+		</body>
+	</worldbody>
+	
+	<actuator>
+		<motor joint="pin" name="torque" gear="1" ctrllimited="true" ctrlrange="-100 100"/>
+		<position name="position_servo" joint="pin" kp="5"/>
+		<velocity name="velocity_servo" joint="pin" kv="5"/>
+	</actuator>
+
+	<sensor>
+		<jointpos joint="pin" noise="0.2"/>
+		<jointvel joint="pin" noise="1"/>
+		<accelerometer name="imu_accel" site="imu_site"/>
+        <gyro name="imu_gyro" site="imu_site"/>
+	</sensor>
+</mujoco>
